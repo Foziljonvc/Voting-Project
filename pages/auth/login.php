@@ -1,17 +1,3 @@
-<?php
-
-require "vendor/autoload.php";
-
-$admin = new Admin();
-
-if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    header("Location: /dashboard.php");
-    exit;
-}
-
-?>
-
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -34,10 +20,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                             <p class="text-center fw-bold mx-3 mb-0">Or</p>
                             <hr class="flex-grow-1">
                         </div>
-                        <form action="login.php" method="POST">
+                        <form action="/login" method="POST">
                             <div class="mb-3">
                                 <label for="name" class="form-label">Username</label>
-                                <input type="text" class="form-control" id="name" name="name" placeholder="Enter username" required>
+                                <input type="text" class="form-control" id="name" name="username" placeholder="Enter username" required>
                             </div>
                             <div class="mb-3">
                                 <label for="password" class="form-label">Password</label>
@@ -62,3 +48,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         crossorigin="anonymous"></script>
 </body>
 </html>
+
+<?php
+
+//session_destroy($_SESSION);

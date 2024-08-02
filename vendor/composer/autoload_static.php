@@ -160,6 +160,7 @@ class ComposerStaticInit4b55c7ef33235a0353c1b6b079f86964
         'Psr\\Http\\Message\\UploadedFileInterface' => __DIR__ . '/..' . '/psr/http-message/src/UploadedFileInterface.php',
         'Psr\\Http\\Message\\UriFactoryInterface' => __DIR__ . '/..' . '/psr/http-factory/src/UriFactoryInterface.php',
         'Psr\\Http\\Message\\UriInterface' => __DIR__ . '/..' . '/psr/http-message/src/UriInterface.php',
+        'Surveys' => __DIR__ . '/../..' . '/src/Surveys.php',
     );
 
     public static function getInitializer(ClassLoader $loader)

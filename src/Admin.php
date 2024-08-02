@@ -2,16 +2,23 @@
 
 declare(strict_types=1);
 
+global $error;
+
 class Admin extends DB 
 {
-    public function saveInfo (string $email, string $password): bool
+    public function login (string $username, string $password): bool
     {
-        $stmt = $this->pdo->prepare("INSERT INTO admin (email, password) VALUES (:email, :password)");
-        $stmt->bindParam(':email', $email);
-        $stmt->bindParam(':password', $password);
+        $stmt = $this->pdo->prepare("SELECT * FROM admin WHERE username = :username AND password = :password");
+        $stmt->bindParam(":username", $username);
+        $stmt->bindParam(":password", $password);
         $stmt->execute();
-
-        return (bool)$stmt;
+        if ($stmt->fetch(PDO::FETCH_OBJ)) {
+            header('Location: /admin');
+            $_SESSION['username'] = $username;
+        } else {
+//            $error = "Hello";
+            header('Location: /login');
+        }
     }
 
     public function saveAdminRegistration (string $email, string $password, string $name, string $surname): bool
@@ -31,6 +38,13 @@ class Admin extends DB
         }
     }
 
+    public function post(string $path, $collback): void
+    {
+        if ($_SERVER['REQUEST_METHOD'] === 'POST' && $_SERVER['REQUEST_URI'] === $path) {
+            $collback();
+        }
+    }
+
 //    public function checkAdmin (string $email, string $password): bool
 //    {
 //        $stmt = $this->pdo->prepare("SELECT * FROM admin WHERE email = :email AND password = :password");
@@ -43,7 +57,7 @@ class Admin extends DB
 //        if (count($result) == 0) {
 //            return $this->saveInfo($email, $password);
 //        } else {
-//            header('Location: dashboard.php');
+//            header('Location: home.php');
 //        }
 //    }
 }
