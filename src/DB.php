@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 class DB 
 {
-    protected $pdo;
+    protected PDO $pdo;
 
     public function __construct()
     {

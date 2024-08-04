@@ -2,62 +2,89 @@
 
 declare(strict_types=1);
 
-global $error;
+use JetBrains\PhpStorm\NoReturn;
 
-class Admin extends DB 
+class Admin extends DB
 {
-    public function login (string $username, string $password): bool
+    #[NoReturn] public function login(string $username, string $password): void
     {
-        $stmt = $this->pdo->prepare("SELECT * FROM admin WHERE username = :username AND password = :password");
+        $stmt = $this->pdo->prepare("SELECT * FROM admin WHERE username = :username");
         $stmt->bindParam(":username", $username);
-        $stmt->bindParam(":password", $password);
         $stmt->execute();
-        if ($stmt->fetch(PDO::FETCH_OBJ)) {
-            header('Location: /admin');
+
+        $result = $stmt->fetch();
+
+        if ($result && password_verify($password, $result['password']) && $result['username'] === $username) {
             $_SESSION['username'] = $username;
+            $_SESSION['check'] = 1;
+            unset($_SESSION['error']);
+            header('Location: /admin');
         } else {
-//            $error = "Hello";
+            $_SESSION['error'] = "Password or username is incorrect";
             header('Location: /login');
         }
+        exit();
     }
-
-    public function saveAdminRegistration (string $email, string $password, string $name, string $surname): bool
+    #[NoReturn] public function checkAvailability(): void
     {
-        $stmt = $this->pdo->prepare("INSERT INTO admin (name, surname, email, password) VALUES (:name, :surname, :email, :password)");
-        $stmt->bindParam(':name', $surname);
-        $stmt->bindParam(':surname', $surname);
-        $stmt->bindParam(':email', $email);
-        $stmt->bindParam(':password', $password);
-        $stmt->execute();
-    }
-
-    public function get(string $path, $collback): void
-    {
-        if ($_SERVER['REQUEST_METHOD'] === 'GET' && $_SERVER['REQUEST_URI'] === $path) {
-            $collback();
+        if (!isset($_SESSION['username'])) {
+            $_SESSION['check'] = 1;
+            header('Location: /login');
+            exit();
         }
-    }
-
-    public function post(string $path, $collback): void
-    {
-        if ($_SERVER['REQUEST_METHOD'] === 'POST' && $_SERVER['REQUEST_URI'] === $path) {
-            $collback();
-        }
-    }
-
-//    public function checkAdmin (string $email, string $password): bool
-//    {
-//        $stmt = $this->pdo->prepare("SELECT * FROM admin WHERE email = :email AND password = :password");
-//        $stmt->bindParam(':email', $email);
-//        $stmt->bindParam(':password', $password);
-//        $stmt->execute();
-//
-//        $result = $stmt->fetch(PDO::FETCH_ASSOC);
-//
-//        if (count($result) == 0) {
-//            return $this->saveInfo($email, $password);
-//        } else {
-//            header('Location: home.php');
+//        } elseif ($_SESSION['check'] === 1) {
+//            unset($_SESSION['check']);
+//            require 'pages/adminPanel.php';
+//            exit();
 //        }
-//    }
+    }
+    #[NoReturn] public function logout(): void
+    {
+        session_destroy();
+
+        header('Location: /login');
+        exit();
+    }
+    public function get(string $path, $callback): void
+    {
+        if ($_SERVER['REQUEST_METHOD'] === 'GET' && parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH) === $path) {
+            $callback();
+            exit();
+        }
+    }
+
+    public function post(string $path, $callback): void
+    {
+        if ($_SERVER['REQUEST_METHOD'] === 'POST' && parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH) === $path) {
+            $callback();
+            exit();
+        }
+    }
+
+    public function delete(int $id, string $table, string $dynamicHeader = NULL): void
+    {
+        $stmt = $this->pdo->prepare("DELETE FROM $table WHERE id = :id");
+        $stmt->bindParam(":id", $id);
+        $stmt->execute();
+
+        header("location: /{$dynamicHeader}");
+    }
+
+    #[NoReturn] public function edit(int $id, string $table, string $name, string $dynamicHeader): void
+    {
+        $stmt = $this->pdo->prepare("UPDATE $table SET name = :name WHERE id = :id");
+        $stmt->bindParam(":id", $id);
+        $stmt->bindParam(":name", $name);
+        $stmt->execute();
+
+        header("location: /{$dynamicHeader}");
+        exit();
+    }
+
+    #[NoReturn] public function notFount(): void
+    {
+        http_response_code(response_code: 404);
+        require 'pages/partials/errors.php';
+        exit();
+    }
 }
