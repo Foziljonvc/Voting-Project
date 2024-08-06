@@ -61,13 +61,14 @@ class Admin extends DB
         }
     }
 
-    public function delete(int $id, string $table, string $dynamicHeader = NULL): void
+    #[NoReturn] public function delete(int $id, string $table, string $dynamicHeader = NULL): void
     {
         $stmt = $this->pdo->prepare("DELETE FROM $table WHERE id = :id");
         $stmt->bindParam(":id", $id);
         $stmt->execute();
 
         header("location: /{$dynamicHeader}");
+        exit();
     }
 
     #[NoReturn] public function edit(int $id, string $table, string $name, string $dynamicHeader): void
@@ -87,4 +88,58 @@ class Admin extends DB
         require 'pages/partials/errors.php';
         exit();
     }
+
+    public function checkUserId(int $chatId): bool
+    {
+        $stmt = $this->pdo->prepare("SELECT userId FROM admin WHERE userId = :chatId");
+        $stmt->bindParam(":chatId", $chatId);
+        $stmt->execute();
+
+        $result = $stmt->fetch(PDO::FETCH_ASSOC);
+        return $result !== false;
+    }
+
+    public function saveAds(int $chatId, int $messageId): void
+    {
+        $stmt = $this->pdo->prepare("INSERT INTO ads (chatId, messageId) VALUES (:chatID, :messageId)");
+        $stmt->bindParam(":chatID", $chatId);
+        $stmt->bindParam(":messageId", $messageId);
+        $stmt->execute();
+    }
+
+    public function saveStatus(string $status): void
+    {
+        $stmt = $this->pdo->prepare("INSERT INTO user (status) VALUES (:status)");
+        $stmt->bindParam(":status", $status);
+        $stmt->execute();
+    }
+
+    public function getStatus(string $status)
+    {
+        $stmt = $this->pdo->prepare("SELECT * FROM user WHERE status = :status");
+        $stmt->bindParam(":status", $status);
+        $stmt->execute();
+
+        return $stmt->fetch(PDO::FETCH_ASSOC) ?? false;
+    }
+
+    public function deleteStatus(): void
+    {
+        $stmt = $this->pdo->prepare("TRUNCATE TABLE user");
+        $stmt->execute();
+    }
+
+    public function getAllAds(int $chatId): false|array
+    {
+        $stmt = $this->pdo->prepare("SELECT * FROM ads WHERE chatId = :chatId");
+        $stmt->bindParam(":chatId", $chatId);
+        $stmt->execute();
+
+        return $stmt->fetchAll(PDO::FETCH_ASSOC) ?? false;
+    }
 }
+
+//CREATE TABLE user (
+//    id INT AUTO_INCREMENT PRIMARY KEY,
+//    status VARCHAR(32)
+//);

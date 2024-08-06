@@ -36,12 +36,13 @@ class Surveys extends DB
         header('location: /channels');
         exit();
     }
-    public function addNewAdmin (string $username, string $password): void
+    public function addNewAdmin (string $username, string $password, int $userId): void
     {
-        $stmt = $this->pdo->prepare("INSERT INTO admin (username, password) VALUES (:username, :password)");
+        $stmt = $this->pdo->prepare("INSERT INTO admin (username, password, userId) VALUES (:username, :password, :userId)");
         $stmt->bindParam(":username", $username);
         $hash = password_hash($password, PASSWORD_DEFAULT);
         $stmt->bindParam(":password", $hash);
+        $stmt->bindParam(":userId", $userId);
         $stmt->execute();
 
         header('location: /admin');

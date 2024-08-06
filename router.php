@@ -5,7 +5,14 @@ declare(strict_types=1);
 $admin = new Admin();
 $surveys = new Surveys();
 
-$admin->get('/login', fn() => require 'pages/auth/login.php');
+$admin->get('/login', function() {
+    if (isset($_SESSION['username'])) {
+        require 'pages/adminPanel.php';
+    } else {
+        require 'pages/auth/login.php';
+    }
+});
+
 $admin->post('/login', fn() => (new Admin())->login($_POST['username'], $_POST['password']));
 $admin->get('/logout', fn() => (new Admin())->logout());
 
@@ -27,8 +34,7 @@ $admin->get('/votes&delete', fn() => (new Admin())->delete((int)$_GET['id'], "su
 
 $admin->post('/add&channel', fn() => (new Surveys())->addChannelsId((string)$_POST['channel']));
 $admin->post('/add', fn() => (new Surveys())->addSurveys($_POST['surveys'], $_POST['desc']));
-$admin->post('/admin', fn() => (new Surveys())->addNewAdmin($_POST['username'], $_POST['password']));
-$admin->post('/add&votes', fn() => (new Surveys())->addSurveryVariants($_POST['survey_insert'], $_SESSION['id']));
+$admin->post('/admin', fn() => (new Surveys())->addNewAdmin($_POST['username'], $_POST['password'], (int)$_POST['userId']));
 $admin->post('/add&votes', fn() => (new Surveys())->addSurveryVariants($_POST['survey_insert'], $_SESSION['id']));
 
 $admin->notFount();

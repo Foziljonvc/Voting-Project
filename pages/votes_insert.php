@@ -24,6 +24,56 @@ if ($_SERVER["REQUEST_METHOD"] == "GET") {
     <?php
     require "pages/partials/link.php";
     ?>
+    <style>
+        .input-group-text-custom {
+            background-color: #6c757d; /* Secondary color */
+            color: #ffffff;
+            border-radius: 0.375rem 0 0 0.375rem;
+        }
+
+        .form-control-custom {
+            border-radius: 0 0.375rem 0.375rem 0;
+        }
+
+        .btn-custom {
+            border-radius: 0.375rem;
+            font-size: 1.1rem;
+            font-weight: 600;
+            transition: all 0.2s;
+        }
+
+        .btn-custom:hover {
+            background-color: #28a745;
+            border-color: #28a745;
+        }
+
+        .btn-back {
+            background-color: #dc3545;
+            border-color: #dc3545;
+            font-size: 1.1rem;
+            font-weight: 600;
+            border-radius: 0.375rem;
+        }
+
+        .btn-back:hover {
+            background-color: #c82333;
+            border-color: #c82333;
+        }
+
+        .btn-add {
+            background-color: #28a745;
+            border-color: #28a745;
+            font-size: 1.1rem;
+            font-weight: 600;
+            border-radius: 0.375rem;
+            margin-top: 0.5rem;
+        }
+
+        .btn-add:hover {
+            background-color: #218838;
+            border-color: #218838;
+        }
+    </style>
 </head>
 
 <body>
@@ -78,22 +128,23 @@ if ($_SERVER["REQUEST_METHOD"] == "GET") {
         </form>
 
         <form action="/add&votes" method="post">
+
             <div class="container mt-4">
                 <div class="mb-3">
                     <div class="input-group mb-3">
-                        <input type="text" class="form-control" placeholder="Enter the name" name="survey_insert"
+                        <span class="input-group-text input-group-text-custom">📋</span>
+                        <input type="text" class="form-control form-control-custom" placeholder="Enter the name" name="survey_insert"
                                aria-label="Survey" <?php if (!$editId): ?> required <?php endif; ?> >
                     </div>
                     <div class="d-grid">
-                        <button class="btn btn-success" type="submit"><b>Add</b></button>
+                        <a href="/votes" class="btn btn-back">
+                            <b>Back</b>
+                        </a>
+                        <button class="btn btn-add" type="submit"><b>Add</b></button>
                     </div>
                 </div>
             </div>
-            <div class="container mt-4">
-                <a href="/votes" class="btn btn-success">
-                    <i class="bi bi-arrow-left"></i><b>Back</b>
-                </a>
-            </div>
+
         </form>
 
     </div>

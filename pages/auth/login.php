@@ -4,7 +4,6 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Login Form</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-GFz8EmtS1P9IK8JH+N7rNjs/gtDq7E4U07pE3+h2z9yy6BQ+abDRX2Tq0qWpR8tb" crossorigin="anonymous">
     <?php require "pages/partials/link.php"; ?>
 </head>
 <body class="bg-light d-flex align-items-center justify-content-center vh-100">
