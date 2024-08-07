@@ -16,7 +16,6 @@ class Admin extends DB
 
         if ($result && password_verify($password, $result['password']) && $result['username'] === $username) {
             $_SESSION['username'] = $username;
-            $_SESSION['check'] = 1;
             unset($_SESSION['error']);
             header('Location: /admin');
         } else {

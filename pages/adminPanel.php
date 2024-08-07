@@ -1,11 +1,3 @@
-<?php
-
-$survey = new Surveys();
-
-$posts = $survey->getUsersInfo();
-
-?>
-
 <!doctype html>
 <html lang="en">
 <head>
@@ -62,6 +54,7 @@ $posts = $survey->getUsersInfo();
                 </tr>
                 </thead>
                 <tbody>
+                <?php $posts = (new Surveys())->getUsersInfo(); ?>
                 <?php if (!empty($posts)): ?>
                     <?php foreach ($posts as $post) : ?>
                         <tr>

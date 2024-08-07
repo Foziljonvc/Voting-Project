@@ -13,6 +13,7 @@ if (isset($update->message)) {
     $first_name = $message->from->first_name;
 
     if ($text === '/start') {
+        $admin->deleteStatus();
         try {
             $sendMessage->sendStartMessage((int)$chat_id, "Assalomu aleykum", $first_name, $username, "Ovoz berish botimizga <b>Xush kelibsiz</b>");
         } catch (GuzzleException $e) {
@@ -21,6 +22,7 @@ if (isset($update->message)) {
     }
 
     if ($text === '/admin') {
+        $admin->deleteStatus();
         if ($admin->checkUserId($chat_id)) {
             try {
                 $sendMessage->sendAdminMessage((int)$chat_id, "<i>$first_name</i>\n <b>Admin</b> panel bo'limiga xush kelibsiz");
@@ -31,6 +33,7 @@ if (isset($update->message)) {
     }
 
     if ($text === '/ads') {
+        $admin->deleteStatus();
         if ($admin->checkUserId($chat_id)) {
             $admin->saveStatus("ads");
             try {
@@ -39,6 +42,51 @@ if (isset($update->message)) {
             }
         }
         return;
+    }
+
+    if ($text === '/documentation') {
+        $admin->deleteStatus();
+        if ($admin->checkUserId($chat_id)) {
+            try {
+                $sendMessage->sendMessageAds($chat_id, "<i><b>Assalomu aleykum!</b></i>
+Barcha <b>hujjatlar</b> royxatini olish uchun shu linkni bosing!");
+            } catch (GuzzleException $e) {
+            }
+        }
+        return;
+    }
+
+//    $response = $admin->getStatus("ads");
+//
+//    if ($response['status'] === 'ads') {
+//        $admin->deleteStatus();
+//        $admin->saveAds($chat_id, $update->message->message_id);
+//        $admin->deleteStatus();
+//        try {
+//            $sendMessage->sendMessageAds((int)$chat_id, "<b>Reklama</b> muvaffaqiyatli saqlandi:");
+//        } catch (GuzzleException $e) {
+//        }
+//        return;
+//    }
+
+    if ($text === '/getAds') {
+        $admin->deleteStatus();
+        if ($admin->checkUserId($chat_id)) {
+            $response = $admin->getAllAds($chat_id);
+            try {
+                $sendMessage->sendAllMessageAds($chat_id, $response);
+            } catch (GuzzleException $e) {
+            }
+        }
+        return;
+    }
+
+
+    if (!$admin->getStatus('ads')) {
+        try {
+            $sendMessage->sendNoneMessage($chat_id);
+        } catch (GuzzleException $e) {
+        }
     }
 
     $response = $admin->getStatus("ads");
@@ -50,25 +98,6 @@ if (isset($update->message)) {
         } catch (GuzzleException $e) {
         }
         return;
-    }
-
-    if ($text === '/getAds') {
-        if ($admin->checkUserId($chat_id)) {
-            $response = $admin->getAllAds($chat_id);
-            var_dump($response);
-            try {
-                $sendMessage->sendAllMessageAds($chat_id, $response);
-            } catch (GuzzleException $e) {
-            }
-        }
-        return;
-    }
-
-
-
-    try {
-        $sendMessage->sendNoneMessage($chat_id);
-    } catch (GuzzleException $e) {
     }
 
     return;

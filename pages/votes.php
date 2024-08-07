@@ -1,11 +1,3 @@
-<?php
-
-$surveys = new Surveys();
-
-$posts = $surveys->getSurveys();
-
-?>
-
 <!doctype html>
 <html lang="en">
 <head>
@@ -60,20 +52,21 @@ require "pages/partials/navbar.php";
             </tr>
             </thead>
             <tbody>
-            <?php if (!empty($posts)): ?>
-                <?php foreach ($posts as $post) : ?>
-                    <tr>
-                        <td>
-                            <b><?php echo $post['name'] ?></b>
-                        </td>
-                        <td>
-                            <a href="/insert?id=<?php echo $post['id']; ?>" class="btn btn-danger"
-                                title="Shu qatordagi ma'lumotlarni ichiga yo'nalish qo'shadi"><i class="bi bi-pencil-fill"></i>
-                                <b>Insert</b></a>
-                        </td>
-                    </tr>
-                <?php endforeach; ?>
-            <?php endif; ?>
+            <?php $posts = (new Surveys())->getSurveys(); ?>
+                <?php if (!empty($posts)): ?>
+                    <?php foreach ($posts as $post) : ?>
+                        <tr>
+                            <td>
+                                <b><?php echo $post['name'] ?></b>
+                            </td>
+                            <td>
+                                <a href="/insert?id=<?php echo $post['id']; ?>" class="btn btn-danger"
+                                    title="Shu qatordagi ma'lumotlarni ichiga yo'nalish qo'shadi"><i class="bi bi-pencil-fill"></i>
+                                    <b>Insert</b></a>
+                            </td>
+                        </tr>
+                    <?php endforeach; ?>
+                <?php endif; ?>
             </tbody>
         </table>
         <div class="container mt-4">
@@ -93,20 +86,4 @@ require "pages/partials/navbar.php";
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 
 </body>
-</html
-
-<?php
-
-//<!--CREATE TABLE admin (-->
-//<!--    id INT AUTO_INCREMENT PRIMARY KEY,-->
-//<!--    username VARCHAR(255),-->
-//<!--    password VARCHAR(255)-->
-//<!--);-->
-
-
-//INSERT INTO survey_variants (survey_id, name) VALUES (1, 'TATU');
-//INSERT INTO survey_variants (survey_id, name) VALUES (1, 'TDTU');
-//INSERT INTO survey_variants (survey_id, name) VALUES (2, '226');
-//INSERT INTO survey_variants (survey_id, name) VALUES (2, '110');
-
-?>
+</html>

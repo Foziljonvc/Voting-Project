@@ -1,18 +1,3 @@
-<?php
-
-$surveys = new Surveys();
-
-$editId = $_GET['editId'] ?? false;
-
-if ($_SERVER["REQUEST_METHOD"] == "GET") {
-    if (isset($_GET["id"])) {
-        $posts = $surveys->getSurveyInsert((int)$_GET['id']);
-        $surveyName = $surveys->getSurveyName((int)$_GET['id']);
-        $_SESSION['id'] = (int)$_GET['id'];
-    }
-}
-
-?>
 <!doctype html>
 <html lang="en" xmlns="http://www.w3.org/1999/html">
 <head>
@@ -95,34 +80,36 @@ if ($_SERVER["REQUEST_METHOD"] == "GET") {
                 </tr>
                 </thead>
                 <tbody>
-                <?php if (!empty($posts)): ?>
-                    <?php foreach ($posts as $post) : ?>
-                        <tr>
-                            <td>
-                                <?php if ($editId == $post['id']): ?>
-                                    <input type="hidden" name="editId" value="<?= $post['id']; ?>">
-                                    <b>Name</b>
-                                    <input type="text" name="editName" value="<?= $post['name']; ?>" style="margin-bottom: 0.5rem;" required>
-                                    <br>
-                                    <button type="submit" class="btn btn-success"><b>Save</b></button>
-                                    <a href="/insert?id=<?= $_SESSION['id']; ?>" class="btn btn-secondary"><b>Cancel</b></a>
-                                <?php else: ?>
-                                    <b><?= $post['name']; ?></b>
-                                <?php endif; ?>
-                            </td>
-                            <td>
-                                <a href="/insert?id=<?= $_SESSION['id']; ?>&editId=<?= $post['id']; ?>" class="btn btn-primary" style="margin-bottom: 0.5rem;">
-                                    <i class="bi bi-pencil-square"></i> <b>Edit</b>
-                                </a>
-                            </td>
-                            <td>
-                                <a href="/votes&delete?id=<?= $post['id']; ?>" class="btn btn-danger">
-                                    <i class="bi bi-trash3-fill"></i> <b>Delete</b>
-                                </a>
-                            </td>
-                        </tr>
-                    <?php endforeach; ?>
-                <?php endif; ?>
+                <?php if ($_SERVER["REQUEST_METHOD"] == "GET" && isset($_GET["id"])) { $_SESSION['id'] = (int)$_GET['id']; $posts = (new Surveys())->getSurveyInsert($_SESSION['id']); $surveyName = (new Surveys())->getSurveyName($_SESSION['id']); } ?>
+                    <?php $editId = $_GET['editId'] ?? false; ?>
+                        <?php if (!empty($posts)): ?>
+                            <?php foreach ($posts as $post) : ?>
+                                <tr>
+                                    <td>
+                                        <?php if ($editId == $post['id']): ?>
+                                            <input type="hidden" name="editId" value="<?= $post['id']; ?>">
+                                            <b>Name</b>
+                                            <input type="text" name="editName" value="<?= $post['name']; ?>" style="margin-bottom: 0.5rem;" required>
+                                            <br>
+                                            <button type="submit" class="btn btn-success"><b>Save</b></button>
+                                            <a href="/insert?id=<?= $_SESSION['id']; ?>" class="btn btn-secondary"><b>Cancel</b></a>
+                                        <?php else: ?>
+                                            <b><?= $post['name']; ?></b>
+                                        <?php endif; ?>
+                                    </td>
+                                    <td>
+                                        <a href="/insert?id=<?= $_SESSION['id']; ?>&editId=<?= $post['id']; ?>" class="btn btn-primary" style="margin-bottom: 0.5rem;">
+                                            <i class="bi bi-pencil-square"></i> <b>Edit</b>
+                                        </a>
+                                    </td>
+                                    <td>
+                                        <a href="/votes&delete?id=<?= $post['id']; ?>" class="btn btn-danger">
+                                            <i class="bi bi-trash3-fill"></i> <b>Delete</b>
+                                        </a>
+                                    </td>
+                                </tr>
+                            <?php endforeach; ?>
+                        <?php endif; ?>
                 </tbody>
             </table>
         </form>

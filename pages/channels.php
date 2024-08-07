@@ -1,11 +1,3 @@
-<?php
-
-$surveys = new Surveys();
-
-$posts = $surveys->getChannelsId();
-
-?>
-
 <!doctype html>
 <html lang="en">
 <head>
@@ -59,20 +51,21 @@ $posts = $surveys->getChannelsId();
                 </tr>
                 </thead>
                 <tbody>
-                <?php if (!empty($posts)): ?>
-                    <?php foreach ($posts as $post) : ?>
-                        <tr>
-                            <td>
-                                <b><?php echo $post['channel_id'] ?></b>
-                            </td>
-                            <td>
-                                <a href="/channels&delete?id=<?php echo $post['id']; ?>" class="btn btn-danger"
-                                    title="Shu qatordagi ma'lumotni o'chiradi"><i class="bi bi-pencil-fill"></i>
-                                    <b>Delete</b></a>
-                            </td>
-                        </tr>
-                    <?php endforeach; ?>
-                <?php endif; ?>
+                    <?php $posts = (new Surveys())->getChannelsId(); ?>
+                        <?php if (!empty($posts)): ?>
+                            <?php foreach ($posts as $post) : ?>
+                                <tr>
+                                    <td>
+                                        <b><?php echo $post['channel_id'] ?></b>
+                                    </td>
+                                    <td>
+                                        <a href="/channels&delete?id=<?php echo $post['id']; ?>" class="btn btn-danger"
+                                            title="Shu qatordagi ma'lumotni o'chiradi"><i class="bi bi-pencil-fill"></i>
+                                            <b>Delete</b></a>
+                                    </td>
+                                </tr>
+                            <?php endforeach; ?>
+                        <?php endif; ?>
                 </tbody>
             </table>
 
@@ -94,13 +87,3 @@ $posts = $surveys->getChannelsId();
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>
-
-
-<?php
-//CREATE TABLE channels (
-//    id INT AUTO_INCREMENT PRIMARY KEY,
-//    channel_id TEXT
-//);
-
-//INSERT INTO channels (channel_id) VALUES ('-1005678987654');
-?>
