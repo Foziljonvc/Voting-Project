@@ -77,15 +77,13 @@ class BotSendMessage {
      */
     public function sendAllMessageAds(int $chatId, array|false $response): void
     {
-        foreach ($response as $ads) {
             $this->client->post('copyMessage', [
                 'form_params' => [
                     'chat_id' => $chatId,
-                    'from_chat_id' => $ads['chatId'],
-                    'message_id' => $ads['messageId']
+                    'from_chat_id' => $response['chatId'],
+                    'message_id' => $response['messageId']
                 ]
             ]);
-        }
     }
     /**
      * @throws GuzzleException
@@ -101,5 +99,17 @@ class BotSendMessage {
         ]);
     }
 
-
+    /**
+     * @throws GuzzleException
+     */
+    public function sendAdsMessageAds($chatId, array $response): void
+    {
+        $this->client->post('copyMessage', [
+            'form_params' => [
+                'chat_id' => $chatId,
+                'from_chat_id' => $response['chatId'],
+                'message_id' => $response['messageId']
+            ]
+        ]);
+    }
 }

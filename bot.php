@@ -8,21 +8,25 @@ $admin = new Admin();
 if (isset($update->message)) {
     $message = $update->message;
     $chat_id = $message->chat->id;
+    $user_id = $message->from->id;
     $text = $message->text;
     $username = $message->from->username;
     $first_name = $message->from->first_name;
 
     if ($text === '/start') {
-        $admin->deleteStatus();
+        $admin->deleteStatus($user_id);
         try {
             $sendMessage->sendStartMessage((int)$chat_id, "Assalomu aleykum", $first_name, $username, "Ovoz berish botimizga <b>Xush kelibsiz</b>");
         } catch (GuzzleException $e) {
+        }
+        if (!(new Admin())->UserId($user_id)) {
+            (new Admin())->saveUserId($user_id);
         }
         return;
     }
 
     if ($text === '/admin') {
-        $admin->deleteStatus();
+        $admin->deleteStatus($user_id);
         if ($admin->checkUserId($chat_id)) {
             try {
                 $sendMessage->sendAdminMessage((int)$chat_id, "<i>$first_name</i>\n <b>Admin</b> panel bo'limiga xush kelibsiz");
@@ -33,9 +37,9 @@ if (isset($update->message)) {
     }
 
     if ($text === '/ads') {
-        $admin->deleteStatus();
+        $admin->deleteStatus($user_id);
         if ($admin->checkUserId($chat_id)) {
-            $admin->saveStatus("ads");
+            $admin->saveStatus("ads", $user_id);
             try {
                 $sendMessage->sendMessageAds((int)$chat_id, "<b>Reklama</b> uchun kerakli ma'lumotni kiriting:");
             } catch (GuzzleException $e) {
@@ -45,7 +49,7 @@ if (isset($update->message)) {
     }
 
     if ($text === '/documentation') {
-        $admin->deleteStatus();
+        $admin->deleteStatus($user_id);
         if ($admin->checkUserId($chat_id)) {
             try {
                 $sendMessage->sendMessageAds($chat_id, "<i><b>Assalomu aleykum!</b></i>
@@ -69,12 +73,11 @@ Barcha <b>hujjatlar</b> royxatini olish uchun shu linkni bosing!");
 //        return;
 //    }
 
-    if ($text === '/getAds') {
-        $admin->deleteStatus();
+    if ($text === '/sendAds') {
+        $admin->deleteStatus($user_id);
         if ($admin->checkUserId($chat_id)) {
-            $response = $admin->getAllAds($chat_id);
             try {
-                $sendMessage->sendAllMessageAds($chat_id, $response);
+                $admin->sendUserAds();
             } catch (GuzzleException $e) {
             }
         }
@@ -92,7 +95,7 @@ Barcha <b>hujjatlar</b> royxatini olish uchun shu linkni bosing!");
     $response = $admin->getStatus("ads");
     if ($response['status'] === 'ads') {
         $admin->saveAds($chat_id, $update->message->message_id);
-        $admin->deleteStatus();
+        $admin->deleteStatus($user_id);
         try {
             $sendMessage->sendMessageAds((int)$chat_id, "<b>Reklama</b> muvaffaqiyatli saqlandi:");
         } catch (GuzzleException $e) {

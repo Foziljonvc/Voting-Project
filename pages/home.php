@@ -63,7 +63,7 @@
                                     <td>
                                         <?php if ($editId == $post['id']): ?>
                                             <input type="hidden" name="editId" value="<?= $post['id']; ?>">
-                                            <b>Name:</b> <input type="text" name="editName" value="<?= $post['name']; ?>" style="margin-bottom: 0.5rem;" required>
+                                            <input type="text" name="editName" value="<?= $post['name']; ?>" style="margin-bottom: 0.5rem;" required>
                                             <button type="submit" class="btn btn-success"><b>Save</b></button>
                                             <a href="/home" class="btn btn-secondary"><b>Cancel</b></a>
                                         <?php else: ?>

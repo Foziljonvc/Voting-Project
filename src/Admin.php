@@ -2,6 +2,7 @@
 
 declare(strict_types=1);
 
+use GuzzleHttp\Exception\GuzzleException;
 use JetBrains\PhpStorm\NoReturn;
 
 class Admin extends DB
@@ -31,11 +32,6 @@ class Admin extends DB
             header('Location: /login');
             exit();
         }
-//        } elseif ($_SESSION['check'] === 1) {
-//            unset($_SESSION['check']);
-//            require 'pages/adminPanel.php';
-//            exit();
-//        }
     }
     #[NoReturn] public function logout(): void
     {
@@ -106,10 +102,11 @@ class Admin extends DB
         $stmt->execute();
     }
 
-    public function saveStatus(string $status): void
+    public function saveStatus(string $status, int $userId): void
     {
-        $stmt = $this->pdo->prepare("INSERT INTO user (status) VALUES (:status)");
+        $stmt = $this->pdo->prepare("UPDATE user SET status = :status WHERE user_id = :user_id");
         $stmt->bindParam(":status", $status);
+        $stmt->bindParam(":user_id", $userId);
         $stmt->execute();
     }
 
@@ -122,23 +119,57 @@ class Admin extends DB
         return $stmt->fetch(PDO::FETCH_ASSOC) ?? false;
     }
 
-    public function deleteStatus(): void
+    public function deleteStatus(int $userId): void
     {
-        $stmt = $this->pdo->prepare("TRUNCATE TABLE user");
+        $stmt = $this->pdo->prepare("UPDATE user SET status = null WHERE user_id = :user_id");
+        $stmt->bindParam(":user_id", $userId);
         $stmt->execute();
     }
 
-    public function getAllAds(int $chatId): false|array
+    /**
+     * @throws GuzzleException
+     */
+    public function sendUserAds(): void
     {
-        $stmt = $this->pdo->prepare("SELECT * FROM ads WHERE chatId = :chatId");
-        $stmt->bindParam(":chatId", $chatId);
+        $stmt = $this->pdo->query("SELECT * FROM ads");
+        $ads = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+        $stmt = $this->pdo->query("SELECT user_id FROM user");
+        $users = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+
+        foreach ($users as $user) {
+            $userId = $user["user_id"];
+
+            foreach ($ads as $ad) {
+                (new BotSendMessage())->sendAllMessageAds((int)$userId, $ad);
+            }
+        }
+    }
+
+    public function checkCron(): false|int
+    {
+        $uri = $_SERVER['REQUEST_URI'] ?? '';
+
+        $path = parse_url($uri, PHP_URL_PATH);
+
+        return array_search("cron", explode('/', $path));
+    }
+
+    public function UserId(int $userId)
+    {
+        $stmt = $this->pdo->prepare("SELECT * FROM user WHERE user_id = :user_id");
+        $stmt->bindParam(":user_id", $userId);
         $stmt->execute();
 
-        return $stmt->fetchAll(PDO::FETCH_ASSOC) ?? false;
+        $result = $stmt->fetch(PDO::FETCH_ASSOC);
+        return $result !== false ? $result['user_id'] : false;
+    }
+
+    public function saveUserId($userId): void
+    {
+        $stmt = $this->pdo->prepare("INSERT INTO user (user_id) VALUES (:user_id)");
+        $stmt->bindParam(":user_id", $userId);
+        $stmt->execute();
     }
 }
-
-//CREATE TABLE user (
-//    id INT AUTO_INCREMENT PRIMARY KEY,
-//    status VARCHAR(32)
-//);

@@ -63,7 +63,12 @@
 
 <body>
     <?php
-    require 'pages/partials/navbar.php';
+        require 'pages/partials/navbar.php';
+        if ($_SERVER["REQUEST_METHOD"] == "GET" && isset($_GET["id"])) {
+            $_SESSION['id'] = (int)$_GET['id'];
+            $posts = (new Surveys())->getSurveyInsert($_SESSION['id']);
+            $surveyName = (new Surveys())->getSurveyName($_SESSION['id']);
+        }
     ?>
     <div class="container mt-4">
         <h1><?= $surveyName['name']; ?></h1>
@@ -80,7 +85,6 @@
                 </tr>
                 </thead>
                 <tbody>
-                <?php if ($_SERVER["REQUEST_METHOD"] == "GET" && isset($_GET["id"])) { $_SESSION['id'] = (int)$_GET['id']; $posts = (new Surveys())->getSurveyInsert($_SESSION['id']); $surveyName = (new Surveys())->getSurveyName($_SESSION['id']); } ?>
                     <?php $editId = $_GET['editId'] ?? false; ?>
                         <?php if (!empty($posts)): ?>
                             <?php foreach ($posts as $post) : ?>
@@ -88,7 +92,6 @@
                                     <td>
                                         <?php if ($editId == $post['id']): ?>
                                             <input type="hidden" name="editId" value="<?= $post['id']; ?>">
-                                            <b>Name</b>
                                             <input type="text" name="editName" value="<?= $post['name']; ?>" style="margin-bottom: 0.5rem;" required>
                                             <br>
                                             <button type="submit" class="btn btn-success"><b>Save</b></button>
