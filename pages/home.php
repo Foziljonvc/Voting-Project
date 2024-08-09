@@ -51,6 +51,7 @@
                     <tr>
                         <th><h5>Name</h5></th>
                         <th style="text-align: center"><h5>Description</h5></th>
+                        <th><h5>Expired</h5></th>
                         <th><h5>Checked</h5></th>
                     </tr>
                 </thead>
@@ -71,6 +72,7 @@
                                         <?php endif; ?>
                                     </td>
                                     <td><?= $post['description']; ?></td>
+                                    <td><?= $post['expired']; ?></td>
                                     <td>
                                         <a href="/home?editId=<?= $post['id']; ?>" class="btn btn-primary btn-spacing" style="margin-bottom: 0.5rem;">
                                             <i class="bi bi-pencil-square"></i> <b>Edit</b>
@@ -93,6 +95,11 @@
                     <div class="input-group mb-3">
                         <span class="input-group-text input-group-text-custom">✏️</span>
                         <input type="text" class="form-control form-control-custom" placeholder="Enter the name" name="surveys"
+                               <?php if (!$editId): ?>required <?php endif; ?>>
+                    </div>
+                    <div class="input-group mb-3 w-100">
+                        <span class="input-group-text input-group-text-custom">⏱</span>
+                        <input type="datetime-local" class="form-control" name="expired" placeholder="Enter the expiration date"
                                <?php if (!$editId): ?>required <?php endif; ?>>
                     </div>
                     <div class="input-group mb-3">

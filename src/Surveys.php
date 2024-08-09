@@ -7,11 +7,12 @@ use JetBrains\PhpStorm\NoReturn;
 class Surveys extends DB
 {
 
-    #[NoReturn] public function addSurveys(string $name, string $description): void
+    #[NoReturn] public function addSurveys(string $name, string $description, string $expired): void
     {
-        $stmt = $this->pdo->prepare("INSERT INTO surveys (name, description) VALUES (:name, :description)");
+        $stmt = $this->pdo->prepare("INSERT INTO surveys (name, description, expired) VALUES (:name, :description, :expired)");
         $stmt->bindParam(":name", $name);
         $stmt->bindParam(":description", $description);
+        $stmt->bindParam(":expired", $expired);
         $stmt->execute();
 
         header('location: /home');

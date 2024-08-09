@@ -78,6 +78,7 @@ Barcha <b>hujjatlar</b> royxatini olish uchun shu linkni bosing!");
         if ($admin->checkUserId($chat_id)) {
             try {
                 $admin->sendUserAds();
+                $admin->deleteAds();
             } catch (GuzzleException $e) {
             }
         }

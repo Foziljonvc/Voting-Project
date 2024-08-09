@@ -33,7 +33,7 @@ $admin->get("/admin&delete", fn() => (new Admin())->delete((int)$_GET['id'], "ad
 $admin->get('/votes&delete', fn() => (new Admin())->delete((int)$_GET['id'], "survey_variants", "insert?id={$_SESSION['id']}"));
 
 $admin->post('/add&channel', fn() => (new Surveys())->addChannelsId((string)$_POST['channel']));
-$admin->post('/add', fn() => (new Surveys())->addSurveys($_POST['surveys'], $_POST['desc']));
+$admin->post('/add', fn() => (new Surveys())->addSurveys($_POST['surveys'], $_POST['desc'], $_POST['expired']));
 $admin->post('/admin', fn() => (new Surveys())->addNewAdmin($_POST['username'], $_POST['password'], (int)$_POST['userId']));
 $admin->post('/add&votes', fn() => (new Surveys())->addSurveryVariants($_POST['survey_insert'], $_SESSION['id']));
 

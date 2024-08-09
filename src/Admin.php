@@ -134,6 +134,9 @@ class Admin extends DB
         $stmt = $this->pdo->query("SELECT * FROM ads");
         $ads = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
+//        $stmt = $this->pdo->query("SELECT * FROM user LIMIT 5 OFFSET 0");
+
+
         $stmt = $this->pdo->query("SELECT user_id FROM user");
         $users = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
@@ -150,7 +153,6 @@ class Admin extends DB
     public function checkCron(): false|int
     {
         $uri = $_SERVER['REQUEST_URI'] ?? '';
-
         $path = parse_url($uri, PHP_URL_PATH);
 
         return array_search("cron", explode('/', $path));
@@ -171,5 +173,10 @@ class Admin extends DB
         $stmt = $this->pdo->prepare("INSERT INTO user (user_id) VALUES (:user_id)");
         $stmt->bindParam(":user_id", $userId);
         $stmt->execute();
+    }
+
+    public function deleteAds(): void
+    {
+        $stmt = $this->pdo->query("TRUNCATE TABLE ads");
     }
 }
